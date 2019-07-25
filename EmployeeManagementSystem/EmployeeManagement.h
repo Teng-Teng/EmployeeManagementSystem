@@ -5,6 +5,8 @@ using namespace std;
 #include "employee.h"
 #include "manager.h"
 #include "boss.h"
+#include <fstream>
+#define FILENAME "empFile.txt"
 
 class EmployeeManagement {
 public:
@@ -19,8 +21,17 @@ public:
 	// add employee
 	void addEmployee();
 
+	// save file
+	void save();
+
+	// get the number of employee in the file
+	int getEmpNum();
+
 	// total number of employee
 	int m_EmpNum;
+
+	// whether the file is empty
+	bool m_IsFileEmpty;
 
 	// Employee array pointer
 	Worker** m_EmpArray;

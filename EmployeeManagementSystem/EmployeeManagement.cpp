@@ -1,8 +1,41 @@
 #include "employeeManagement.h"
 
 EmployeeManagement::EmployeeManagement() {
-	this->m_EmpNum = 0;
-	this->m_EmpArray = NULL;
+	// the file doesn't exist
+	ifstream ifs;
+	ifs.open(FILENAME, ios::in);
+
+	if (!ifs.is_open()) {
+		cout << "The file doesn't exist!" << endl;
+
+		this->m_EmpNum = 0;
+		this->m_EmpArray = NULL;
+		this->m_IsFileEmpty = true;
+
+		ifs.close();
+		return;
+	}
+
+	// the file exist, no data
+	char ch;
+	ifs >> ch;
+
+	if (ifs.eof()) {
+		cout << "The file is empty!" << endl;
+
+		this->m_EmpNum = 0;
+		this->m_EmpArray = NULL;
+		this->m_IsFileEmpty = true;
+
+		ifs.close();
+		return;
+	}
+
+	// the file exists and have employee information
+	int num = this->getEmpNum();
+	cout << "The number of employee is: " << num << endl;
+	this->m_EmpNum = num;
+
 }
 
 // display the main menu
@@ -91,7 +124,8 @@ void EmployeeManagement::addEmployee() {
 		this->m_EmpNum = newSize;
 
 		// Save data to file 
-
+		this->save();
+		this->m_IsFileEmpty = false;
 
 		cout << "Successfully add" << addNum << "new employee!" << endl;
 	}
@@ -102,6 +136,38 @@ void EmployeeManagement::addEmployee() {
 	system("cls");
 }
 
-EmployeeManagement::~EmployeeManagement() {
+void EmployeeManagement::save() {
+	ofstream ofs;
+	ofs.open(FILENAME, ios::out);
 
+	for (int i = 0; i < this->m_EmpNum; i++) {
+		ofs << this->m_EmpArray[i]->m_Id << " "
+			<< this->m_EmpArray[i]->m_Name << " "
+			<< this->m_EmpArray[i]->m_DeptId << endl;
+	}
+
+	ofs.close();
+}
+
+int EmployeeManagement::getEmpNum() {
+	ifstream ifs;
+	ifs.open(FILENAME, ios::in);
+
+	int id;
+	string name;
+	int deptId;
+	int num = 0;
+
+	while (ifs >> id && ifs >> name && ifs >> deptId) {
+		num++;
+	}
+
+	return num;
+}
+
+EmployeeManagement::~EmployeeManagement() {
+	if (this->m_EmpArray != NULL) {
+		delete[] this->m_EmpArray;
+		this->m_EmpArray = NULL;
+	}
 }
