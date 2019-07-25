@@ -45,15 +45,15 @@ int main() {
 				break; 
 			case 2:
 				// Display employee information
-
+				em.displayEmp();
 				break;
 			case 3:
 				// Delete employee information
-
+				em.delEmp();
 				break;
 			case 4:
 				// Modify employee information
-
+				em.modifyEmp();
 				break;
 			case 5:
 				// Search employee information

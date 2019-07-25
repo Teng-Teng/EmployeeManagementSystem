@@ -1,3 +1,4 @@
-1 jack 3
-2 rose 2
-3 philip 2
+1 jack Boss
+2 rose Manager
+3 philip Employee
+77 batman Employee
