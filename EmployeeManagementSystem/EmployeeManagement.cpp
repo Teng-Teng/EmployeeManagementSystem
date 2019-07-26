@@ -61,8 +61,8 @@ void EmployeeManagement::displayMenu() {
 	cout << "***************   3. Delete employee information   ****************" << endl;
 	cout << "***************   4. Modify employee information   ****************" << endl;
 	cout << "***************   5. Search employee information   ****************" << endl;
-	cout << "***************   6. Sort by number                ****************" << endl;
-	cout << "***************   7. Empty all documents           ****************" << endl;
+	cout << "***************   6. Sort by employee ID           ****************" << endl;
+	cout << "***************   7. Clear all employees           ****************" << endl;
 	cout << "*******************************************************************" << endl;
 	cout << endl;
 }
@@ -76,7 +76,7 @@ void EmployeeManagement::exitSystem() {
 
 // add employee
 void EmployeeManagement::addEmployee() {
-	cout << "Please enter the ID of employees you want to add: " << endl;
+	cout << "Please enter the number of employees you want to add: " << endl;
 
 	int addNum = 0;
 	cin >> addNum;
@@ -316,8 +316,149 @@ void EmployeeManagement::modifyEmp() {
 	system("cls");
 }
 
+// find employee
+void EmployeeManagement::findEmp() {
+	if (this->m_IsFileEmpty)
+		cout << "The file doesn't exist or the record is empty!" << endl;
+	else {
+		cout << "Please enter the search methods: " << endl;
+		cout << "1. Search by employee ID" << endl;
+		cout << "2. Search by employee name" << endl;
+
+		int select = 0;
+		cin >> select;
+
+		if (select == 1) {
+			// find employee by ID
+			cout << "Please enter the employee ID you want to find: " << endl;
+			int id;
+			cin >> id;
+
+			int ret = isExist(id);
+			if (ret != -1) {
+				cout << "Find the employee with ID " << id << ": " << endl;
+				this->m_EmpArray[ret]->showInfo();
+			}
+			else
+				cout << "Can't find this employee!" << endl;
+		} 
+		else if (select == 2) {
+			// find employee by name
+			cout << "Please enter the employee name you want to find: " << endl;
+			string name;
+			cin >> name;
+			bool flag = false;
+
+			for (int i = 0; i < m_EmpNum; i++) {
+				if (this->m_EmpArray[i]->m_Name == name) {
+					cout << "Find the employee with ID "
+						<< this->m_EmpArray[i]->m_Id
+						<< ", the employee information: " << endl;
+
+					flag = true;
+					this->m_EmpArray[i]->showInfo();
+				}
+			}
+
+			if (flag == false)
+				cout << "Can't find this employee!" << endl;
+		} 
+		else
+			cout << "Please enter the correct search methods!" << endl;
+	}
+
+	system("pause");
+	system("cls");
+}
+
+// sort employee by ID
+void EmployeeManagement::sortEmp() {
+	if (this->m_IsFileEmpty) {
+		cout << "The file doesn't exist or the record is empty!" << endl;
+		system("pause");
+		system("cls");
+	}
+	else {
+		cout << "Please select the sorting method: " << endl;
+		cout << "1. Sort by employee ID in ascending order" << endl;
+		cout << "2. Sort by employee ID in descending order" << endl;
+
+		int select = 0;
+		cin >> select;
+
+		for (int i = 0; i < m_EmpNum - 1; i++) {
+			int minOrMax = i;
+			for (int j = i + 1; j < m_EmpNum; j++) {
+				// ascending order
+				if (select == 1) {
+					if (this->m_EmpArray[minOrMax]->m_Id > this->m_EmpArray[j]->m_Id)
+						minOrMax = j;
+				}
+				else {
+					// descending order
+					if (this->m_EmpArray[minOrMax]->m_Id < this->m_EmpArray[j]->m_Id)
+						minOrMax = j;
+				}
+			}
+
+			if (i != minOrMax) {
+				Worker* temp = this->m_EmpArray[i];
+				this->m_EmpArray[i] = this->m_EmpArray[minOrMax];
+				this->m_EmpArray[minOrMax] = temp;
+			}
+		}
+
+		this->save();
+		cout << "Sort successfully, the employee information after sorting is: " << endl;
+		this->displayEmp();
+
+	}
+
+}
+
+// clear file
+void EmployeeManagement::clearFile() {
+	cout << "Are you sure you want to clear all the employee information?" << endl;
+	cout << "1. Yes" << endl;
+	cout << "2. No" << endl;
+
+	int select;
+	cin >> select;
+
+	if (select == 1) {
+		// Recreate file after deleting the file
+		ofstream ofs(FILENAME, ios::trunc);
+		ofs.close();
+
+		if (this->m_EmpArray != NULL) {
+			for (int i = 0; i < this->m_EmpNum; i++) {
+				if (this->m_EmpArray[i] != NULL) {
+					delete this->m_EmpArray[i];
+					this->m_EmpArray[i] = NULL;
+				}
+				
+			}
+
+			delete[] this->m_EmpArray;
+			this->m_EmpArray = NULL;
+			this->m_EmpNum = 0;
+			this->m_IsFileEmpty = true;
+		}
+
+		cout << "Clear all the employee information sucessfully!" << endl;
+	}
+
+	system("pause");
+	system("cls");
+}
+
 EmployeeManagement::~EmployeeManagement() {
 	if (this->m_EmpArray != NULL) {
+		for (int i = 0; i < this->m_EmpNum; i++) {
+			if (this->m_EmpArray[i] != NULL)
+				delete this->m_EmpArray[i];
+		}
+
 		delete[] this->m_EmpArray;
 		this->m_EmpArray = NULL;
 	}

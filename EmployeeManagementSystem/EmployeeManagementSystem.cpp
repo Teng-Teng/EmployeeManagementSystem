@@ -57,15 +57,15 @@ int main() {
 				break;
 			case 5:
 				// Search employee information
-
+				em.findEmp();
 				break;
 			case 6:
 				// Sort by number
-
+				em.sortEmp();
 				break;
 			case 7:
-				// Empty all documents
-
+				// clear file
+				em.clearFile();
 				break;
 			default:
 				system("cls");

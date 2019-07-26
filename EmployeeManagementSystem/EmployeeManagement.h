@@ -42,6 +42,15 @@ public:
 	// modify employee
 	void modifyEmp();
 
+	// find employee
+	void findEmp();
+
+	// sort employee by ID
+	void sortEmp();
+
+	// clear file
+	void clearFile();
+
 	// total number of employee
 	int m_EmpNum;
 
